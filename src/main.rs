@@ -220,7 +220,10 @@ impl SandWormInterpreter {
 				}
 			}
 			b' ' | 0 => (),
-			other => panic!("{} not implemented", other as char),
+			other => {
+				self.worm_in.push(other);
+				dont_push_instruction = true;
+			}
 		}
 		if !dont_push_instruction {
 			self.worm_out.push(instruction);
@@ -288,7 +291,7 @@ fn parse(source: &str) -> (Vec<Vec<u8>>, (usize, usize)) {
 	for (row, line) in source.lines().enumerate() {
 		width = width.max(line.len());
 		if let Some(col) = line.find('@') {
-			start_pos = (row, col);
+			start_pos = (col, row);
 		}
 		program.push(line.as_bytes().to_vec());
 	}
