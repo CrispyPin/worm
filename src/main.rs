@@ -159,20 +159,19 @@ impl SandWormInterpreter {
 				self.worm_in.push(instruction - 48);
 				dont_push_instruction = true;
 			}
-			// b'0'..=b'9' => self.grow(instruction - 48),
 			b'+' => {
 				let a = self.shrink();
 				self.worm_out.push(instruction);
 				let b = self.shrink();
 				dont_push_instruction = true;
-				self.worm_in.push(a + b);
+				self.worm_in.push(a.wrapping_add(b));
 			}
 			b'-' => {
 				let a = self.shrink();
 				self.worm_out.push(instruction);
 				dont_push_instruction = true;
 				let b = self.shrink();
-				self.worm_in.push(a + b);
+				self.worm_in.push(a.wrapping_sub(b));
 			}
 			b'v' => self.direction = Direction::Down,
 			b'^' => self.direction = Direction::Up,
