@@ -157,18 +157,17 @@ impl SandWormInterpreter {
 		match instruction {
 			b'0'..=b'9' => {
 				self.worm_in.push(instruction - 48);
-				dont_push_instruction = true;
 			}
 			b'+' => {
 				let a = self.shrink();
-				self.worm_out.push(instruction);
+				self.worm_out.insert(0, instruction);
 				let b = self.shrink();
 				dont_push_instruction = true;
 				self.worm_in.push(a.wrapping_add(b));
 			}
 			b'-' => {
 				let a = self.shrink();
-				self.worm_out.push(instruction);
+				self.worm_out.insert(0, instruction);
 				dont_push_instruction = true;
 				let b = self.shrink();
 				self.worm_in.push(a.wrapping_sub(b));
@@ -219,14 +218,14 @@ impl SandWormInterpreter {
 					}
 				}
 			}
-			b' ' | 0 => (),
+			b' ' | 0 => dont_push_instruction = true,
 			other => {
 				self.worm_in.push(other);
 				dont_push_instruction = true;
 			}
 		}
 		if !dont_push_instruction {
-			self.worm_out.push(instruction);
+			self.worm_out.insert(0, instruction);
 		}
 		self.move_to(front);
 	}
