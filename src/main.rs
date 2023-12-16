@@ -39,7 +39,7 @@ enum State {
 fn main() {
 	let args: Vec<_> = env::args().collect();
 	if args.len() <= 1 {
-		println!("usage: sandworm source_file input_file");
+		println!("usage: worm source_file [input_file]");
 		exit(0);
 	}
 	let filename = &args[1];
@@ -190,6 +190,7 @@ impl SandWormInterpreter {
 					.get(self.input_index)
 					.copied()
 					.unwrap_or_default();
+				self.input_index += 1;
 				self.worm_in.push(val);
 			}
 			b'=' => {
