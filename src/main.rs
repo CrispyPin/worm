@@ -65,7 +65,12 @@ fn main() {
 		stdin().read_line(&mut input_text).unwrap();
 		let action: Vec<_> = input_text.trim().split_ascii_whitespace().collect();
 		if input_text.starts_with("input ") {
-			interpreter.input.extend(&input_text.as_bytes()[6..]);
+			interpreter.input.extend(
+				&input_text
+					.strip_suffix('\n')
+					.unwrap_or(&input_text)
+					.as_bytes()[6..],
+			);
 			continue;
 		}
 		match action.as_slice() {
