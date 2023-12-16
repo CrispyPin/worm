@@ -18,6 +18,7 @@ struct SandWormInterpreter {
 	input_index: usize,
 	output: Vec<u8>,
 	state: State,
+	steps: usize,
 }
 
 #[derive(Debug, Default)]
@@ -76,7 +77,7 @@ fn main() {
 		match action.as_slice() {
 			[] | ["step"] => interpreter.step_once(),
 			["step", num] => _ = num.parse().map(|n| interpreter.step(n)),
-			// ["run"] => interpreter.run(),
+			["run"] => interpreter.run(),
 			["q" | "exit" | "quit"] => break,
 
 			_ => println!("{}", "unrecognised command".red()),
@@ -101,6 +102,13 @@ impl SandWormInterpreter {
 			state: State::default(),
 			direction: Direction::default(),
 			input_index: 0,
+			steps: 0,
+		}
+	}
+
+	fn run(&mut self) {
+		while self.state == State::Running {
+			self.step_once();
 		}
 	}
 
@@ -114,7 +122,8 @@ impl SandWormInterpreter {
 	}
 
 	fn show(&self) {
-		dbg!(&self);
+		// dbg!(&self);
+		print!("\x1B[2J"); // clear screen
 		println!(
 			"{:?}",
 			self.worm.iter().map(|p| self.get(*p)).collect::<Vec<_>>()
@@ -145,6 +154,7 @@ impl SandWormInterpreter {
 		}
 		println!("output: {}", String::from_utf8_lossy(&self.output));
 		println!("input: {}", String::from_utf8_lossy(&self.input));
+		println!("steps: {}", self.steps);
 	}
 
 	fn step_once(&mut self) {
@@ -156,6 +166,7 @@ impl SandWormInterpreter {
 			self.state = State::EndOfProgram;
 			return;
 		}
+		self.steps += 1;
 		let instruction = self.get(front);
 		let mut dont_push_instruction = false;
 
@@ -201,6 +212,10 @@ impl SandWormInterpreter {
 			b'=' => {
 				let last_val = self.worm.last().map(|&p| self.get(p)).unwrap_or_default();
 				self.worm_in.push(last_val);
+			}
+			b'~' => {
+				let last_val = self.shrink();
+				self.worm_in.push((last_val == 0) as u8);
 			}
 			b'\\' => {
 				let val = self.shrink();

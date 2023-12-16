@@ -8,6 +8,7 @@
 ## commands
 ```
 +- pop 2 values, push sum/difference (uses the order they are popped, so `0-` negates the top of the stack)
+~ logical not (0 becomes 1, nonzero becomes 0)
 ><^v change direction
 0..9 push number to stack
 /\ pop stack, reflect to the side if not zero
