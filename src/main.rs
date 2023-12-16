@@ -225,10 +225,8 @@ impl SandWormInterpreter {
 				}
 			}
 			b' ' | 0 => dont_push_instruction = true,
-			other => {
-				self.worm_in.push(other);
-				dont_push_instruction = true;
-			}
+			b'_' => self.worm_in.push(b' '),
+			other => self.worm_in.push(other),
 		}
 		if !dont_push_instruction {
 			self.worm_out.insert(0, instruction);
