@@ -1,0 +1,21 @@
+This program alternates between two loops, running each one 8 times each.
+
+@00000v
+v00000<
+8
+8
++
+=
++       /2    \
+        8     =
+        8     +
+        +     +
+        +     8
+        =     8
+>            1/
+  4
+
+
+
+        3
+  \=++88/
